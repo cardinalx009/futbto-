@@ -634,35 +634,8 @@ bot.on('callback_query', async (ctx) => {
       }
       
       const bookingDate = new Date(booking.date);
-      const isSameDay = isToday(bookingDate);
       
-      if (isSameDay) {
-        // Late cancellation - penalty required
-        const timeLabel = `${String(booking.hourStart).padStart(2, '0')}:00–${String(booking.hourEnd).padStart(2, '0')}:00`;
-        await ctx.answerCbQuery();
-        await ctx.editMessageText(
-          '⚠️ JARIMA ESLATMASI\n\n' +
-          `Siz bugungi kun (${formatDate(bookingDate)}) uchun ${timeLabel} vaqtidagi broningizni bekor qilmoqdasiz.\n\n` +
-          `💰Jarima miqdori: 100,000 so'm\n\n` +
-          `⚠️ ESLATMA: Bugungi kun uchun bekor qilish 100,000 so'm jarima to'lashni talab qiladi.\n\n` +
-          `Iltimos, bekor qilish sababini yozing.\n` +
-          `Jarimani qachon to'laysiz?`,
-          {
-            ...Markup.inlineKeyboard([
-              [Markup.button.callback('🔙 Bekor qilish', 'back_to_week')]
-            ]),
-            parse_mode: 'HTML'
-          }
-        );
-        
-        userStates.set(userId, {
-          type: 'late_cancellation',
-          bookingId: booking._id.toString()
-        });
-        return;
-      }
-      
-      // Normal cancellation (at least 1 day before)
+      // Normal cancellation
       booking.status = 'cancelled';
       booking.cancelTime = new Date();
       await booking.save();
