@@ -3,6 +3,35 @@
  */
 
 /**
+ * Normalize phone number to Uzbek international format (+998XXXXXXXXX)
+ * Handles: +998975372043, 998975372043, 975372043, 8998975372043, etc.
+ */
+function formatPhoneNumber(phone) {
+  if (!phone) return phone;
+
+  // Remove all non-digit characters
+  let digits = String(phone).replace(/\D/g, '');
+  if (!digits) return phone;
+
+  // Drop leading 8 (national trunk prefix)
+  if (digits.length === 13 && digits.startsWith('8')) {
+    digits = digits.slice(1);
+  }
+
+  // Drop country code 998 to get the 9-digit local number
+  if (digits.startsWith('998')) {
+    digits = digits.slice(3);
+  }
+
+  // Uzbek local number is 9 digits
+  if (digits.length === 9) {
+    return `+998${digits}`;
+  }
+
+  return phone;
+}
+
+/**
  * Mask phone number for privacy
  * Example: +998970986226 -> +99897***6226
  */
@@ -38,6 +67,7 @@ function maskPhoneNumber(phone) {
 }
 
 module.exports = {
+  formatPhoneNumber,
   maskPhoneNumber
 };
 

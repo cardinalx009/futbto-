@@ -2,6 +2,7 @@ const { Markup } = require('telegraf');
 const { getWeekStart, getWeekDays, formatDate, formatDateShort, isPastDate } = require('./time');
 const Booking = require('../models/Booking');
 const User = require('../models/User');
+const { formatPhoneNumber } = require('./phone');
 
 /**
  * Create admin main menu keyboard (Inline)
@@ -146,7 +147,7 @@ async function getDaySchedule(date) {
 
         if (user) {
           if (user.phone) {
-            extraInfo += ` (${user.phone})`;
+            extraInfo += ` (${formatPhoneNumber(user.phone)})`;
           } else if (user.firstName) {
             extraInfo += ` (${user.firstName})`;
           }
